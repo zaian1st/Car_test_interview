@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Price Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Car Price Prediction</h2>
+        <form action="/predict" method="post" id="prediction-form">
+            <label for="mileage">Mileage:</label>
+            <input type="text" id="mileage" name="mileage" required>
+            
+            <label for="tax">Tax:</label>
+            <input type="text" id="tax" name="tax" required>
+            
+            <label for="mpg">MPG:</label>
+            <input type="text" id="mpg" name="mpg" required>
+            
+            <label for="engineSize">Engine Size:</label>
+            <input type="text" id="engineSize" name="engineSize" required>
+            
+            <label for="price_per_mileage">Tax per Mileage:</label>
+            <input type="text" id="price_per_mileage" name="price_per_mileage" required>
+            
+            <label for="tax_to_price_ratio">tax_per_engine_size:</label>
+            <input type="text" id="tax_to_price_ratio" name="tax_to_price_ratio" required>
+            
+            <button type="submit">Predict Price</button>
+        </form>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById("prediction-form").onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch("/predict", {
+                method: "POST",
+                body: formData
+            });
+            const result = await response.json();
+            document.getElementById("result").innerHTML = result.predicted_price 
+                ? `<h3>Predicted Price: $${result.predicted_price}</h3>` 
+                : `<p style="color: red;">${result.error}</p>`;
+        };
+    </script>
+</body>
+</html>
